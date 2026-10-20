@@ -52,7 +52,7 @@ def transform_station_status(payload: dict) -> pd.DataFrame:
     })
 
     # Moment de la collecte : indispensable pour construire l'historique plus tard
-    df["collected_at"] = pd.Timestamp.now(tz="UTC")
+    df["collected_at"] = pd.Timestamp.now(tz="UTC").floor("min")
 
     df = df[[
         "station_id", "bikes_available", "mechanical_bikes", "ebikes",
