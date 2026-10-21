@@ -1,12 +1,26 @@
 """Pipeline ETL Vélib' : extraction -> nettoyage -> chargement dans PostgreSQL."""
 
 import logging
+import sys
+from pathlib import Path
 
 from extract import fetch_feed
 from load import get_engine, load_station_status, load_stations
 from transform import transform_station_information, transform_station_status
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s")
+# Dossier logs/ à la racine du projet, quel que soit le dossier d'où on lance le script
+LOG_DIR = Path(__file__).resolve().parent.parent / "logs"
+LOG_DIR.mkdir(exist_ok=True)
+
+handlers = [logging.FileHandler(LOG_DIR / "pipeline.log", encoding="utf-8")]
+if sys.stderr:  # pas de console quand le script est lancé par le Planificateur
+    handlers.append(logging.StreamHandler())
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(levelname)s | %(message)s",
+    handlers=handlers,
+)
 logger = logging.getLogger(__name__)
 
 
@@ -31,4 +45,8 @@ def run() -> None:
 
 
 if __name__ == "__main__":
-    run()
+    try:
+        run()
+    except Exception:
+        logger.exception("Échec du pipeline")  # écrit l'erreur complète dans le log
+        sys.exit(1)  # code de sortie non nul = le Planificateur sait que ça a échoué

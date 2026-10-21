@@ -64,7 +64,7 @@ Python 3 · Pandas · SQLAlchemy · PostgreSQL 17 · Docker Compose · Power BI 
 ### 1. Cloner et installer
 
 ```powershell
-git clone https://github.com/<rmekrant>/velib-dashboard.git
+git clone https://github.com/rmekrant/velib-dashboard.git
 cd velib-dashboard
 python -m venv .venv
 .venv\Scripts\Activate.ps1
